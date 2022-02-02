@@ -1,1 +1,1 @@
-# -equalstreetnames-zurich-todo
+# equalstreetnames-zurich-todo
