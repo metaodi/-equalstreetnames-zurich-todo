@@ -1,0 +1,10 @@
+streamlit
+streamlit-folium
+folium
+pandas
+matplotlib
+python-dotenv
+geopandas
+requests
+folium
+osm2geojson
