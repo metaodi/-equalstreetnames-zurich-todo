@@ -54,7 +54,7 @@ def get_layers_from_wfs(wfs_base_url):
         }
     return layers
 
-@st.cache
+@st.cache(ttl=3600)
 def overpass_query(q, endpoint='http://overpass.osm.ch/api/interpreter'):
     r = requests.get(endpoint, params={'data': q})
     r.raise_for_status()
@@ -70,7 +70,7 @@ def overpass_query(q, endpoint='http://overpass.osm.ch/api/interpreter'):
         f['properties'] = props
     return osm_gj
 
-@st.cache
+@st.cache(ttl=3600)
 def wikidata_item(item, endpoint='https://www.wikidata.org/w/api.php'):
     res = requests.get(endpoint, params={
         'action': 'wbgetentities',
@@ -80,7 +80,7 @@ def wikidata_item(item, endpoint='https://www.wikidata.org/w/api.php'):
     response = res.json()
     print(response)
     # throttle requests
-    time.sleep(0.2)
+    time.sleep(0.1)
     return response.get('entities', {item: {}})[item]
 
 @st.cache
