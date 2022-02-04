@@ -168,3 +168,5 @@ st.header(f"Streets with potential person")
 folium_static(m)
 #st.table(filtered_df[['name', 'erlaeutertung', 'osm_link']])
 st.write(filtered_df[['name', 'erlaeutertung', 'wikidata_link', 'named_after', 'osm_link']].to_html(escape=False), unsafe_allow_html=True)
+
+st.markdown('&copy; 2022 Stefan Oderbolz | [Github Repository](https://github.com/metaodi/equalstreetnames-zurich-todo)')
