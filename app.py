@@ -70,6 +70,15 @@ def overpass_query(q, endpoint='http://overpass.osm.ch/api/interpreter'):
     return osm_gj
 
 @st.cache
+def wikidata_item(item, endpoint='https://www.wikidata.org/w/api.php'):
+    res = requests.get(endpoint, params={
+        'action': 'wbgetentities',
+        'ids': item,
+        'format': 'json',
+    })
+    return res.json()['entities'][item]
+
+@st.cache
 def load_data(wfs_url, layer):
     r = requests.get(wfs_url, params={
         'service': 'WFS',
@@ -85,6 +94,11 @@ def osm_link(r):
     return f"<a href='https://openstreetmap.org/{r['type']}/{r['id']}'>{r['type']}/{r['id']}</a>"
 
 def wikidata_link(r):
+    return f"<a href='https://www.wikidata.org/wiki/{r['wikidata']}'>{r['wikidata']}</a>"
+
+def named_after_link(r):
+    wd_item = wikidata_item(r['wikidata'])
+    print(wd_item)
     return f"<a href='https://www.wikidata.org/wiki/{r['wikidata']}'>{r['wikidata']}</a>"
 
 lv95 = 'EPSG:2056'
