@@ -5,6 +5,7 @@ import streamlit as st
 
 import os
 import json
+import time
 from pprint import pprint
 
 import requests
@@ -76,7 +77,11 @@ def wikidata_item(item, endpoint='https://www.wikidata.org/w/api.php'):
         'ids': item,
         'format': 'json',
     })
-    return res.json()['entities'][item]
+    response = res.json()
+    print(response)
+    # throttle requests
+    time.sleep(0.2)
+    return response.get('entities', {item: {}})[item]
 
 @st.cache
 def load_data(wfs_url, layer):
@@ -98,8 +103,12 @@ def wikidata_link(r):
 
 def named_after_link(r):
     wd_item = wikidata_item(r['wikidata'])
-    print(wd_item)
-    return f"<a href='https://www.wikidata.org/wiki/{r['wikidata']}'>{r['wikidata']}</a>"
+    if 'P138' not in wd_item.get('claims', {}):
+        return ''
+    print(wd_item['claims']['P138'][0]['mainsnak'])
+    named_id = wd_item['claims']['P138'][0]['mainsnak']['datavalue']['value']['id']
+    return f"<a href='https://www.wikidata.org/wiki/{named_id}'>{named_id}</a>"
+    return ''
 
 lv95 = 'EPSG:2056'
 wgs84 = 'EPSG:4326'
@@ -139,6 +148,7 @@ filtered_df = merged_df[merged_df['erlaeutertung'].str.match(r'^[\s\w]+\(\d{4}-\
 
 filtered_df['osm_link'] = filtered_df.apply(osm_link, axis=1)
 filtered_df['wikidata_link'] = filtered_df.apply(wikidata_link, axis=1)
+filtered_df['named_after'] = filtered_df.apply(named_after_link, axis=1)
 
 # Basiskarte
 m = base_map()
@@ -157,4 +167,4 @@ folium.features.GeoJson(
 st.header(f"Streets with potential person")
 folium_static(m)
 #st.table(filtered_df[['name', 'erlaeutertung', 'osm_link']])
-st.write(filtered_df[['name', 'erlaeutertung', 'wikidata_link', 'osm_link']].to_html(escape=False), unsafe_allow_html=True)
+st.write(filtered_df[['name', 'erlaeutertung', 'wikidata_link', 'named_after', 'osm_link']].to_html(escape=False), unsafe_allow_html=True)
