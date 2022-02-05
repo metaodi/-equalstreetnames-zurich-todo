@@ -53,7 +53,7 @@ jobs:
       uses: github-actions-x/commit@v2.6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        push-branch: master
+        push-branch: main
         name: GitHub Action Bot
         commit-message: Update latest_run_id.txt
         rebase: 'true'
