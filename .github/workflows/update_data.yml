@@ -55,5 +55,5 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         push-branch: master
         name: GitHub Action Bot
-        commit-message: Update data.csv with latest data
+        commit-message: Update latest_run_id.txt
         rebase: 'true'
