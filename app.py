@@ -7,6 +7,8 @@ import os
 import json
 import time
 from pprint import pprint
+import io
+import zipfile
 
 import requests
 import folium
@@ -15,6 +17,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import osm2geojson
 from streamlit_folium import folium_static
+from ghapi.all import GhApi
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
@@ -35,9 +38,21 @@ def base_map(location=[47.38, 8.53], zoom=13):
     ).add_to(m)
     return m
 
+
 @st.cache(ttl=3600)
 def load_data():
-    #df = pd.read_csv("https://raw.githubusercontent.com/metaodi/equalstreetnames-zurich-todo/main/data.csv")
+    with open('latest_run_id.txt') as f:
+        run_id = f.read().strip()
+
+    # read data.pkl from GitHub Actions Artifacts
+    github_token = os.environ['GITHUB_TOKEN']
+    api = GhApi(owner='metaodi', repo='equalstreetnames-zurich-todo', token=github_token)
+    artifacts = api.actions.list_workflow_run_artifacts(owner="metaodi", repo="equalstreetnames-zurich-todo", run_id=run_id)['artifacts']
+    download = api.actions.download_artifact(owner="metaodi", repo="equalstreetnames-zurich-todo", artifact_id=artifacts[0]['id'], archive_format="zip")
+
+    with zipfile.ZipFile(io.BytesIO(download)) as zip_ref:
+        zip_ref.extractall('.')
+
     df = pd.read_pickle("data.pkl")
     return df
 
