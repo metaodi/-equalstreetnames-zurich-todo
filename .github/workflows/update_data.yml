@@ -2,7 +2,7 @@ name: Update data
 
 on:
   schedule:
-    - cron:  '*/30 * * * *' # runs every half hour
+    - cron:  '0 * * * *' # runs every hour
   workflow_dispatch:
 
 jobs:
