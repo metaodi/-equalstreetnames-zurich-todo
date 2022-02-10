@@ -87,8 +87,8 @@ folium.features.GeoJson(
 st.header(f"Streets with potential person")
 folium_static(m)
 
-empty_named_after = st.checkbox("Only display empty 'named_after'")
-group_by_street = st.checkbox("Group by street")
+empty_named_after = st.checkbox("Only display empty 'named_after'", value=False)
+group_by_street = st.checkbox("Group by street", value=True)
 
 if empty_named_after:
     filtered_df = filtered_df.drop(filtered_df[filtered_df['named_after'].notna()].index).reset_index(drop=True)
