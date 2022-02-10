@@ -81,6 +81,7 @@ folium.features.GeoJson(
         fields=['name', 'erlaeutertung', 'wikidata'],
         aliases=['name:', 'Erläuterung:', "Wikidata:"],
         permanent=True,
+        sticky=False,
     )
 ).add_to(m)
 
