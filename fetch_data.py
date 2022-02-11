@@ -95,11 +95,9 @@ osm_df = geopandas.GeoDataFrame.from_features(osm_result, crs=wgs84)
 # Join OSM data with Strassenverzeichnis
 merged_df = osm_df.merge(df_str, how="inner", left_on='name', right_on='strassenname')
 
-# alle entfernen, die bereits name:etymology:wikidata Einträge haben
-merged_df = merged_df.drop(merged_df[merged_df['name:etymology:wikidata'].notna()].index)
-
 # filter auf alle die Personen sein könnten: Einträge in der Form «Vorname Name (Jahr-Jahr)»
 filtered_df = merged_df[merged_df['erlaeutertung'].str.match(r'^(.+\(\d{4}-\d{4}\)|.*Vorname)')==True].reset_index(drop=True)
 
 filtered_df['named_after'] = filtered_df.apply(named_after, axis=1)
+filtered_df = filtered_df.copy()
 filtered_df.to_pickle('data.pkl')
