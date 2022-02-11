@@ -79,8 +79,7 @@ folium.features.GeoJson(
     tooltip=folium.features.GeoJsonTooltip(
         fields=['name', 'erlaeutertung', 'wikidata'],
         aliases=['name:', 'Erläuterung:', "Wikidata:"],
-        permanent=True,
-        sticky=False,
+        style=('background-color: grey; color: white; font-family: courier new; font-size: 14px; padding: 10px; width: 500px; word-wrap: break-word; overflow: scroll;'),
     )
 ).add_to(m)
 
