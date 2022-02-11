@@ -56,20 +56,18 @@ def load_data():
 def osm_link(r):
     return f"<a href='https://openstreetmap.org/{r['type']}/{r['id']}'>{r['type']}/{r['id']}</a>"
 
-def wikidata_link(r):
-    return f"<a href='https://www.wikidata.org/wiki/{r['wikidata']}'>{r['wikidata']}</a>"
-
-def named_after_link(r):
-    if not r['named_after']:
+def wikidata_link(r, attr='wikidata'):
+    if not r[attr]:
         return ''
-    return f"<a href='https://www.wikidata.org/wiki/{r['named_after']}'>{r['named_after']}</a>"
+    return f"<a href='https://www.wikidata.org/wiki/{r[attr]}'>{r[attr]}</a>"
 
 filtered_df = load_data().copy()
 
 
 filtered_df['osm_link'] = filtered_df.apply(osm_link, axis=1)
 filtered_df['wikidata_link'] = filtered_df.apply(wikidata_link, axis=1)
-filtered_df['named_after_link'] = filtered_df.apply(named_after_link, axis=1)
+filtered_df['named_after_link'] = filtered_df.apply(wikidata_link, args=('named_after'), axis=1)
+
 # Basiskarte
 m = base_map()
 
@@ -89,6 +87,7 @@ folium.features.GeoJson(
 st.header(f"Streets with potential person")
 folium_static(m)
 
+empty_name_ety = st.checkbox("Only display empty 'name:etymology:wikidata'", value=False)
 empty_named_after = st.checkbox("Only display empty 'named_after'", value=False)
 group_by_street = st.checkbox("Group by street", value=True)
 
