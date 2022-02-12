@@ -57,7 +57,7 @@ def osm_link(r):
     return f"<a href='https://openstreetmap.org/{r['type']}/{r['id']}'>{r['type']}/{r['id']}</a>"
 
 def wikidata_link(r, attr='wikidata'):
-    if not r[attr]:
+    if not r[attr] or pd.isna(r[attr]):
         return ''
     return f"<a href='https://www.wikidata.org/wiki/{r[attr]}'>{r[attr]}</a>"
 
@@ -66,8 +66,8 @@ filtered_df = load_data().copy()
 
 filtered_df['osm_link'] = filtered_df.apply(osm_link, axis=1)
 filtered_df['wikidata_link'] = filtered_df.apply(wikidata_link, axis=1)
-filtered_df['named_after_link'] = filtered_df.apply(wikidata_link, args=('named_after'), axis=1)
-filtered_df['name_ety_link'] = filtered_df.apply(wikidata_link, args=('name:etymology:wikidata'), axis=1)
+filtered_df['named_after_link'] = filtered_df.apply(wikidata_link, args=('named_after',), axis=1)
+filtered_df['name_ety_link'] = filtered_df.apply(wikidata_link, args=('name:etymology:wikidata',), axis=1)
 
 # Basiskarte
 m = base_map()
@@ -98,6 +98,7 @@ if empty_named_after:
     filtered_df = filtered_df.drop(filtered_df[filtered_df['named_after'].notna()].index).reset_index(drop=True)
 
 if group_by_street:
+    filtered_df = filtered_df.copy()
     filtered_df = filtered_df.groupby(['name', 'erlaeutertung', 'wikidata_link', 'named_after_link'], as_index=False).count()
     st.write(filtered_df[['name', 'erlaeutertung', 'wikidata_link', 'named_after_link']].to_html(escape=False), unsafe_allow_html=True)
 else:
