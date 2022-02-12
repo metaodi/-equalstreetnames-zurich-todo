@@ -84,7 +84,7 @@ folium.features.GeoJson(
 ).add_to(m)
 
 # display content
-st.header(f"Streets with potential person")
+st.header(f"Streets potential named after a person")
 folium_static(m)
 
 empty_name_ety = st.checkbox("Only display empty 'name:etymology:wikidata'", value=True)
