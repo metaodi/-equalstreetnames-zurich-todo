@@ -99,8 +99,8 @@ if empty_named_after:
 
 if group_by_street:
     filtered_df = filtered_df.copy()
-    filtered_df = filtered_df.groupby(['name', 'erlaeutertung', 'wikidata_link', 'named_after_link'], as_index=False).count()
-    st.write(filtered_df[['name', 'erlaeutertung', 'wikidata_link', 'named_after_link']].to_html(escape=False), unsafe_allow_html=True)
+    filtered_df = filtered_df.groupby(['name', 'erlaeutertung', 'wikidata_link', 'named_after_link', 'name_ety_link'], as_index=False).count()
+    st.write(filtered_df[['name', 'erlaeutertung', 'wikidata_link', 'named_after_link', 'name_ety_link']].to_html(escape=False), unsafe_allow_html=True)
 else:
     st.write(filtered_df[['name', 'erlaeutertung', 'wikidata_link', 'named_after_link', 'osm_link', 'name_ety_link']].to_html(escape=False), unsafe_allow_html=True)
 
