@@ -9,7 +9,6 @@ from pprint import pprint
 
 import pandas as pd
 import osmapi
-from IPython.display import display
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
@@ -28,7 +27,10 @@ def update_osm_way(row):
     pprint(way['tag'])
     pprint(new_way['tag'])
     print("Same? ", way['tag'] == new_way['tag'])
-    s = input("Press Enter to continue or 'q' to quit: ")
+    try:
+        s = input("Press Enter to continue or 'q' to quit: ")
+    except KeyboardInterrupt:
+        s = 'q'
     if s.strip().lower() == 'q':
         sys.exit(0)
     if not way['tag'] == new_way['tag']:
