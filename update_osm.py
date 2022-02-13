@@ -16,10 +16,7 @@ load_dotenv(find_dotenv())
 user = os.getenv('OSM_USER')
 pw = os.getenv('OSM_PASS')
 
-
-filtered_df = pd.read_pickle('data.pkl')
 api = osmapi.OsmApi(api="https://api.openstreetmap.org", username=user, password=pw)
-changeset_id = api.ChangesetCreate({u"comment": u"Add name:etymology:wikidata tag"})
 
 def update_osm_way(row):
     if not row.get('named_after'):
@@ -31,20 +28,19 @@ def update_osm_way(row):
     pprint(way['tag'])
     pprint(new_way['tag'])
     print("Same? ", way['tag'] == new_way['tag'])
-    s = input("Press Enter to continue, 'n' to create a new changeset or 'q' to quit: ")
-    if s.strip().lower() == 'n':
-        api.ChangesetClose()
-        changeset_id = api.ChangesetCreate({u"comment": u"Add name:etymology:wikidata tag"})
+    s = input("Press Enter to continue or 'q' to quit: ")
     if s.strip().lower() == 'q':
-        api.ChangesetClose()
-        sys.exit(1)
+        sys.exit(0)
     if not way['tag'] == new_way['tag']:
-        changed = api.WayUpdate(new_way)
-        pprint(changed['tag'])
+        with api.Changeset({"comment": f"Add name:etymology:wikidata tag to {row['name']}"}) as changeset_id:
+            changed = api.WayUpdate(new_way)
+            print(f"Changeset: {changeset_id}")
+            pprint(changed['tag'])
         time.sleep(2)
 
 
-try:
-    filtered_df.apply(update_osm_way, axis=1)
-finally:
-    api.ChangesetClose()
+filtered_df = pd.read_pickle('data.pkl')
+filtered_df = filtered_df.drop(filtered_df[filtered_df['name:etymology:wikidata'].notna()].index).reset_index(drop=True)
+filtered_df = filtered_df.drop(filtered_df[filtered_df['named_after'].isna()].index).reset_index(drop=True)
+
+filtered_df.apply(update_osm_way, axis=1)
