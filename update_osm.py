@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Update OpenStreetMap with named:etymology:wikidata tags
+
+Usage:
+  update_osm.py
+  update_osm.py (-h | --help)
+  update_osm.py --version
+
+Options:
+  -h, --help                   Show this screen.
+  --version                    Show version.
+"""
 
 import sys
 import os
@@ -9,11 +22,14 @@ from pprint import pprint
 
 import pandas as pd
 import osmapi
+from docopt import docopt
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 user = os.getenv('OSM_USER')
 pw = os.getenv('OSM_PASS')
+
+arguments = docopt(__doc__, version='update_osm.py 1.0')
 
 api = osmapi.OsmApi(api="https://api.openstreetmap.org", username=user, password=pw)
 

@@ -1,14 +1,27 @@
 #!/usr/bin/env python
 # coding: utf-8
+"""Download latest data.pkl from GitHub Actions
+
+Usage:
+  download_data_from_github.py
+  download_data_from_github.py (-h | --help)
+  download_data_from_github.py --version
+
+Options:
+  -h, --help                   Show this screen.
+  --version                    Show version.
+"""
 
 import os
 import io
 import zipfile
-import pandas as pd
 
+import pandas as pd
+from docopt import docopt
 from ghapi.all import GhApi
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
+arguments = docopt(__doc__, version='download_data_from_github.py 1.0')
 
 
 # read data.pkl from GitHub Actions Artifacts

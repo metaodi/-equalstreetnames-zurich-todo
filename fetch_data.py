@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Fetch data from Strassenverzeichnis, Overpass and WikiData
+
+Usage:
+  fetch_data.py
+  fetch_data.py (-h | --help)
+  fetch_data.py --version
+
+Options:
+  -h, --help                   Show this screen.
+  --version                    Show version.
+"""
 
 import os
 import json
 import time
 from pprint import pprint
 
+from docopt import docopt
 import requests
 import geopandas
 import pandas as pd
@@ -13,6 +25,7 @@ import xml.etree.ElementTree as ET
 import osm2geojson
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
+arguments = docopt(__doc__, version='fetch_data.py 1.0')
 
 
 def overpass_query(q, endpoint='http://overpass.osm.ch/api/interpreter'):
